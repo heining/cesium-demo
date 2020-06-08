@@ -1,32 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
     <meta charset="utf-8" />
     <script src="https://cesium.com/downloads/cesiumjs/releases/1.70/Build/Cesium/Cesium.js"></script>
     <link
       href="https://cesium.com/downloads/cesiumjs/releases/1.70/Build/Cesium/Widgets/widgets.css"
       rel="stylesheet"
     />
+    <link rel="stylesheet" type="text/css" href="./index.css"/>
   </head>
-  <body>
-    <div id="cesiumContainer"></div>
-    <script>
-      Cesium.Ion.defaultAccessToken =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI5ZTQyOGE3NC05ZGVjLTQ3MTQtYTllMS0xMTRhZDIxNGI1MGIiLCJpZCI6Mjg0NjQsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1OTExMzQ1NTd9.K4jMRQb_0OxFlVj-RSyuKKVuRnhV-NnX6yNsbLzjVy0";
-      const viewer = new Cesium.Viewer("cesiumContainer", {
-        terrainProvider: Cesium.createWorldTerrain(),
-      });
-      // 添加贴图
-      const tileset = new Cesium.Cesium3DTileset({
-        url: 'https://lab.earthsdk.com/model/702aa950d03c11e99f7ddd77cbe22fea/tileset.json'
-      });
-      const pr = new Cesium.Cesium3DTileset({
-        url: 'http://cdn.lesuidao.cn/prds3/tileset.json'
-      })
-      viewer.scene.primitives.add(tileset);
-      viewer.scene.primitives.add(pr);
-      // 定位
-      viewer.zoomTo(tileset);
-    </script>
+  <body style='background-color: black;'>
+    <div>
+      <div id="cesiumContainer">
+        <div class="warn">内部信息，请勿外传！</div> 
+        <div class='toolbar'>
+          <div id='hotcity'>
+            <div>热门城市</div>
+            <div style='display: flex; margin: 10px 0 15px;'>
+              <div class='region' id='sh' onclick="choosehotcity()">上海</div>
+              <div class='region'>北京</div>
+              <div class='region'>深圳</div>
+            </div>
+          </div>
+
+          <div id="hotcounty" style='display: none;'>
+            <div>下辖区县</div>
+            <div style='display: flex; margin: 10px 0 15px;'>
+              <div class='region' id='pd' onclick="choosehotregion()">浦东新区</div>
+              <div class='region'>黄浦区</div>
+              <div class='region'>徐汇区</div>
+              <div class='region'>长宁区</div>
+              <div class='region'>静安区</div>
+              <div class='region'>普陀区</div>
+              <div class='region'>虹口区</div>
+              <div class='region'>杨浦区</div>
+              <div class='region'>闵行区</div>
+              <div class='region'>宝山区</div>
+              <div class='region'>嘉定区</div>
+              <div class='region'>金山区</div>
+              <div class='region'>松江区</div>
+              <div class='region'>青浦区</div>
+              <div class='region'>奉贤区</div>
+              <div class='region'>崇明县</div>
+            </div>
+          </div>
+
+          <div id="hotregion" style='display: none;'>
+            <div>热门区域</div>
+            <div style='display: flex; margin: 10px 0 15px;'>
+              <div class='region' id='lj' onclick="choosehotarea()">临江区域</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+   
+
+    <script src='./js/map.js'></script>
   </body>
 </html>

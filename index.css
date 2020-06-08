@@ -1,0 +1,35 @@
+body {
+  color: #fff;
+}
+
+.warn {
+  position: absolute;
+  font-size: 14px;
+  width: 100%;
+  text-align: center;
+  z-index: 1;
+  top: 20px;
+}
+
+.toolbar {
+  position: absolute;
+  z-index: 1;                   /**层级*/
+  top: 20px;
+  left: 20px;
+  padding: 15px;
+  font-size: 12px;
+  background-color: #063352;
+  border-radius: 4;
+  border: 2px solid #fff;
+}
+
+.region {
+  background-color: #166b81;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 15px;
+  padding: 0 10px;
+  margin-right: 20px;
+}
