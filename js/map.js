@@ -1,6 +1,6 @@
 Cesium.Ion.defaultAccessToken =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI5ZTQyOGE3NC05ZGVjLTQ3MTQtYTllMS0xMTRhZDIxNGI1MGIiLCJpZCI6Mjg0NjQsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1OTExMzQ1NTd9.K4jMRQb_0OxFlVj-RSyuKKVuRnhV-NnX6yNsbLzjVy0";
-// 地球视图
+// 创建地球视图
 const viewer = new Cesium.Viewer("cesiumContainer", {
   // 添加地形
   //   terrainProvider: Cesium.createWorldTerrain(),
@@ -13,37 +13,55 @@ const viewer = new Cesium.Viewer("cesiumContainer", {
   timeline: false,
   fullscreenButton: false,
   vrButton: false,
+  // 获取用于请求图块的URL模板
+  imageryProvider: new Cesium.UrlTemplateImageryProvider({
+    url: "http://mt1.google.cn/vt/lyrs=s&hl=zh-CN&x={x}&y={y}&z={z}&s=Gali",
+  }),
 });
 // 隐藏页面控件
 viewer._cesiumWidget._creditContainer.style.display = "none";
+// 创建场景对象
+const scene = viewer.scene;
 // 添加贴图
-// const tileset = new Cesium.Cesium3DTileset({
-//   url:
-//     "https://lab.earthsdk.com/model/702aa950d03c11e99f7ddd77cbe22fea/tileset.json",
-// });
-// const pr = new Cesium.Cesium3DTileset({
-// url: 'http://data.marsgis.cn/3dtiles/qx-simiao/tileset.json'
-// })
-
+const prds = new Cesium.Cesium3DTileset({
+  url: "http://cdn.lesuidao.cn/prds3/tileset.json",
+  maximumScreenSpaceError: 2, //调整3D模型的清晰度
+  // show: true,
+  // color: {
+  //   conditions: [
+  //     ["${height} >= 300", "rgba(45, 0, 75, 0.5)"],
+  //     ["${height} >= 200", "rgb(102, 71, 151)"],
+  //     ["${height} >= 100", "rgb(170, 162, 204)"],
+  //     ["${height} >= 50", "rgb(224, 226, 238)"],
+  //     ["${height} >= 25", "rgb(252, 230, 200)"],
+  //     ["${height} >= 10", "rgb(248, 176, 87)"],
+  //     ["${height} >= 5", "rgb(198, 106, 11)"],
+  //     ["true", "rgb(127, 59, 8)"],
+  //   ],
+  // },
+});
+prds.readyPromise
+  .then((prds) => {
+    viewer.scene.primitives.add(prds);
+  })
+  .otherwise((error) => {console.log(error)});
 // const prds = new Cesium.Cesium3DTileset({
 //   url: "http://lesuidao.cn/Scene/Production_3.json",
 //   maximumScreenSpaceError: 2,     //细化程度的最大屏幕空间错误（提高清晰度）
 // });
-// viewer.scene.primitives.add(prds);
 // viewer.scene.primitives.add(tileset);
 
 // 定位
-// viewer.zoomTo(pr);
+// viewer.zoomTo(prds);
 
 choosehotcity = () => {
   // 控制模块的显隐
   document.getElementById("hotcounty").style.display = "block";
   document.getElementById("sh").style.backgroundColor = "#16aad0";
   // 相机视图跳转时
-  viewer.camera.flyTo({
-    destination: Cesium.Cartesian3.fromDegrees(-122.19, 46.25, 5000.0),
-    duration: 2,   //相机飞行的时间
-
+  viewer.flyTo(prds, {
+    duration: 3,
+    offset: new Cesium.HeadingPitchRange(0, 0, prds.boundingSphere.radius * 1800.0),
   });
 };
 
@@ -51,15 +69,9 @@ choosehotregion = () => {
   document.getElementById("hotregion").style.display = "block";
   document.getElementById("pd").style.backgroundColor = "#16aad0";
   // 相机视图跳转
-  viewer.camera.flyTo({
-    destination: Cesium.Cartesian3.fromDegrees(122.19, 46.25, 5000.0)
-  });
 };
 
 choosehotarea = () => {
   document.getElementById("lj").style.backgroundColor = "#16aad0";
   // 相机视图跳转
-  viewer.camera.flyTo({
-    destination: Cesium.Cartesian3.fromDegrees(-122.19, -46.25, 5000.0)
-  });
 };
