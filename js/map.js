@@ -26,7 +26,6 @@ const scene = viewer.scene;
 const prds = new Cesium.Cesium3DTileset({
   url: "http://cdn.lesuidao.cn/prds3/tileset.json",
   maximumScreenSpaceError: 2, //调整3D模型的清晰度
-  // show: true,
   // color: {
   //   conditions: [
   //     ["${height} >= 300", "rgba(45, 0, 75, 0.5)"],
@@ -40,16 +39,28 @@ const prds = new Cesium.Cesium3DTileset({
   //   ],
   // },
 });
+const heightOffset = 0;
 prds.readyPromise
   .then((prds) => {
     viewer.scene.primitives.add(prds);
+    const boundingSphere = prds.boundingSphere;
+    const cartographic = Cesium.Cartographic.fromCartesian(boundingSphere.center);
+    const surface = Cesium.Cartesian3.fromRadians(cartographic.longitude, cartographic.latitude, 0.0);
+    const offset = Cesium.Cartesian3.fromRadians(cartographic.longitude, cartographic.latitude, heightOffset);
+    const translation = Cesium.Cartesian3.subtract(offset, surface, new Cesium.Cartesian3());
+    prds.modelMatrix = Cesium.Matrix4.fromTranslation(translation);
   })
   .otherwise((error) => {console.log(error)});
-// const prds = new Cesium.Cesium3DTileset({
-//   url: "http://lesuidao.cn/Scene/Production_3.json",
-//   maximumScreenSpaceError: 2,     //细化程度的最大屏幕空间错误（提高清晰度）
-// });
-// viewer.scene.primitives.add(tileset);
+
+const lj = new Cesium.Cesium3DTileset({
+  url: "http://lesuidao.cn/Scene/Production_3.json",
+  maximumScreenSpaceError: 2,     //细化程度的最大屏幕空间错误（提高清晰度）
+});
+lj.readyPromise
+  .then((lj) => {
+    viewer.scene.primitives.add(lj);
+  })
+  .otherwise((error) => {console.log(error)});
 
 // 定位
 // viewer.zoomTo(prds);
@@ -61,7 +72,7 @@ choosehotcity = () => {
   // 相机视图跳转时
   viewer.flyTo(prds, {
     duration: 3,
-    offset: new Cesium.HeadingPitchRange(0, 0, prds.boundingSphere.radius * 1800.0),
+    // offset: new Cesium.HeadingPitchRange(0, 0, prds.boundingSphere.radius * 1800.0),
   });
 };
 
@@ -69,9 +80,14 @@ choosehotregion = () => {
   document.getElementById("hotregion").style.display = "block";
   document.getElementById("pd").style.backgroundColor = "#16aad0";
   // 相机视图跳转
+  viewer.flyTo(sh, {
+    duration: 3,
+    offset: new Cesium.HeadingPitchRange(0, 0, prds.boundingSphere.radius * 1800.0),
+  });
 };
 
 choosehotarea = () => {
   document.getElementById("lj").style.backgroundColor = "#16aad0";
   // 相机视图跳转
+  viewer.flyTo(lj)
 };
